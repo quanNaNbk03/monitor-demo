@@ -1,0 +1,7 @@
+type: object
+x-go-type: "dto.MonitorTarget"
+properties:
+  data:
+    $ref: "../openapi.yaml#/components/schemas/MonitorTargetData"
+  legendFormat:
+    type: string

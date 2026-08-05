@@ -1,0 +1,15 @@
+type: object
+x-go-type: "dto.MonitorTargetData"
+properties:
+  timestamps:
+    type: array
+    items:
+      type: integer
+      format: int64
+  values:
+    type: array
+    items:
+      type: number
+      format: double
+  status:
+    type: string

@@ -30,6 +30,10 @@ paths:
   /api/v1/organizations/search:
     $ref: "./path/organization/org_search.yaml"
 
+
+  /api/v1/vms/{id}/prometheus/{metricType}:
+    $ref: "./path/vm/prometheus.yaml"
+
 components:
   schemas:
     HealthResponse:
@@ -64,6 +68,14 @@ components:
       $ref: "./schemas/UpdateOrgRequest.yaml"
     ListZoneResponse:
       $ref: "./schemas/ListZoneResponse.yaml"
+    VMMetricType:
+      $ref: "./schemas/VMMetricType.yaml"
+    Monitor:
+      $ref: "./schemas/Monitor.yaml"
+    MonitorTarget:
+      $ref: "./schemas/MonitorTarget.yaml"
+    MonitorTargetData:
+      $ref: "./schemas/MonitorTargetData.yaml"
 
   responses:
     ErrorResponse400:

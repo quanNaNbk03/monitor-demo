@@ -632,6 +632,86 @@
           }
         }
       }
+    },
+    "/api/v1/vms/{id}/prometheus/{metricType}": {
+      "get": {
+        "summary": "Get VM monitor by metricType with prometheus",
+        "operationId": "getMonitorVMWithProm",
+        "tags": [
+          "vms"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "vm id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "metricType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/VMMetricType"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "step",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get VM monitor by metricType",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Monitor"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -983,6 +1063,77 @@
           },
           "paging": {
             "$ref": "#/components/schemas/Paging"
+          }
+        }
+      },
+      "VMMetricType": {
+        "type": "string",
+        "enum": [
+          "cpu",
+          "diskBytes",
+          "diskOps",
+          "memory",
+          "networkBits",
+          "networkPackets"
+        ]
+      },
+      "Monitor": {
+        "type": "object",
+        "x-go-type": "dto.Monitor",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "step": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonitorTarget"
+            }
+          }
+        }
+      },
+      "MonitorTarget": {
+        "type": "object",
+        "x-go-type": "dto.MonitorTarget",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MonitorTargetData"
+          },
+          "legendFormat": {
+            "type": "string"
+          }
+        }
+      },
+      "MonitorTargetData": {
+        "type": "object",
+        "x-go-type": "dto.MonitorTargetData",
+        "properties": {
+          "timestamps": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "status": {
+            "type": "string"
           }
         }
       }

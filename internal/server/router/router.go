@@ -1,13 +1,13 @@
 package router
 
 import (
+	"github.com/bytedance/gopkg/util/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/quanNaNbk03/monitor-demo/pkg/api/vm"
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"git.ocn.com.vn/ocn/common/appcfg"
-	"git.ocn.com.vn/ocn/common/storage"
 	"github.com/quanNaNbk03/monitor-demo/internal/server/handler"
 	"github.com/quanNaNbk03/monitor-demo/internal/server/middleware"
 	"github.com/quanNaNbk03/monitor-demo/internal/server/repository"
@@ -16,6 +16,9 @@ import (
 	org "github.com/quanNaNbk03/monitor-demo/pkg/api/organization"
 	"github.com/quanNaNbk03/monitor-demo/pkg/api/zone"
 	zoneclient "github.com/quanNaNbk03/monitor-demo/pkg/api/zoneclient"
+
+	"git.ocn.com.vn/ocn/common/appcfg"
+	"git.ocn.com.vn/ocn/common/storage"
 )
 
 // Setup creates and configures the Gin router with all routes and middleware
@@ -48,9 +51,14 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 	// Init Repository
 	zoneRepo := repository.NewZoneRepository(mysqlInstance.DB)
 	orgRepo := repository.NewOrgRepository(mysqlInstance.DB)
+	prometheusRepo, prometheusRepoErr := repository.NewPrometheusClient()
+	if prometheusRepoErr != nil {
+		logger.Fatalf("Error creating prometheus client: %v", prometheusRepoErr)
+	}
 	// Init services
 	zoneService := service.NewZoneService(zoneRepo, orgRepo)
 	orgService := service.NewOrgService(orgRepo)
+	monitorVMService := service.NewMonitorVMService(prometheusRepo)
 	// Create separate handlers for each domain
 	healthHandler := handler.NewHealthHandler()
 
@@ -62,9 +70,11 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 	if appInstance == "admin" {
 		zoneHandler := handler.NewZoneHandler(zoneService)
 		orgHandler := handler.NewOrgHandler(orgService)
+		vmHandler := handler.NewVMHandler(monitorVMService)
 
 		zone.RegisterHandlers(apiGroup, zoneHandler)
 		org.RegisterHandlers(apiGroup, orgHandler)
+		vm.RegisterHandlers(apiGroup, vmHandler)
 	} else if appInstance == "client" {
 		zoneClientHandler := handler.NewZoneClientHandler(zoneService)
 
