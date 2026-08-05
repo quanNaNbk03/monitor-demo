@@ -1,0 +1,10 @@
+package: zone
+generate:
+  gin-server: true
+  models: true
+output: ../../../pkg/api/zone/zone.gen.go
+output-options:
+  skip-prune: false
+  prefer-skip-optional-pointer: true
+  include-tags:
+    - zones

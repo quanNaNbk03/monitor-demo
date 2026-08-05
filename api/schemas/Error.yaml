@@ -1,0 +1,13 @@
+type: object
+properties:
+  error:
+    type: object
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+      message:
+        type: string
+      detail:
+        type: string

@@ -1,0 +1,35 @@
+post:
+  summary: List all Zones
+  operationId: listZones
+  tags:
+    - zones
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            paging:
+              $ref: "../../openapi.yaml#/components/schemas/PagingRequest"
+            searches:
+              type: array
+              items:
+                $ref: "../../openapi.yaml#/components/schemas/SearchRequest"
+  responses:
+    "200":
+      description: List all zones
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/ListZoneResponse"
+    "400":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse400"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse401"
+    "403":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse403"
+    "500":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse500"

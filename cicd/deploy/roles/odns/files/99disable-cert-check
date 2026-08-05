@@ -1,0 +1,2 @@
+Acquire::https::nexus.ocn.com.vn::Verify-Peer "false";
+Acquire::https::nexus.ocn.com.vn::Verify-Host "false";

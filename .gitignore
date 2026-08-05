@@ -1,0 +1,49 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Build output
+# /build/
+/bin/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
+# *.gen.go
+
+# Environment files
+.env
+.env.local
+
+# Local configuration overrides
+config/config*.local.yaml
+config/config*.*.yaml
+!config/config.yaml
+!config/config_sync.yaml
+!config/config.example.yaml
+
+build
+
+## AI Agents
+.agents

@@ -1,0 +1,8 @@
+type: object
+properties:
+  organizations:
+    type: array
+    items:
+      $ref: "../openapi.yaml#/components/schemas/Organization"
+  paging:
+    $ref: "../openapi.yaml#/components/schemas/Paging"

@@ -1,0 +1,27 @@
+post:
+  summary: Create new zone
+  operationId: create
+  tags:
+    - zones
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/CreateZoneRequest"
+
+  responses:
+    "200":
+      description: Create new zone
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Zone"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse401"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse404"
+    "403":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse403"
+    "500":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse500"

@@ -1,0 +1,90 @@
+get:
+  summary: get a Oraganization
+  operationId: get
+  tags:
+    - organizations
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+  responses:
+    "200":
+      description: get Organization successful
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Organization"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse401"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse404"
+    "403":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse403"
+    "500":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse500"
+
+delete:
+  summary: delete a Oraganization
+  operationId: delete
+  tags:
+    - organizations
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+  responses:
+    "200":
+      description: deleted Organization successful
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse401"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse404"
+    "403":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse403"
+    "500":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse500"
+
+
+put:
+  summary: Update a Organization
+  operationId: update
+  tags:
+    - organizations
+  parameters:
+    - name: id
+      in: path
+      description: organization ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/UpdateOrgRequest"
+  responses:
+    "200":
+      description: Organization updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Organization"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse401"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse404"
+    "403":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse403"
+    "500":
+      $ref: "../../openapi.yaml#/components/responses/ErrorResponse500"

@@ -1,0 +1,1134 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OCN-DNS-API API",
+    "description": "dns api server endpoints",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/v1/ping": {
+      "get": {
+        "summary": "Health check endpoint",
+        "operationId": "getHealth",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/zones/{id}": {
+      "get": {
+        "summary": "Get zone detail",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "tags": [
+          "zones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get zone detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zone"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete zone",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "tags": [
+          "zones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Zone deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update zone",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateZoneRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "zones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Zone updated successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/zones": {
+      "post": {
+        "summary": "Create new zone",
+        "operationId": "create",
+        "tags": [
+          "zones"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateZoneRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create new zone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zone"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/zones/search": {
+      "post": {
+        "summary": "List all Zones",
+        "operationId": "listZones",
+        "tags": [
+          "zones"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "paging": {
+                    "$ref": "#/components/schemas/PagingRequest"
+                  },
+                  "searches": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SearchRequest"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List all zones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListZoneResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse400"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/client/zones/{id}": {
+      "get": {
+        "summary": "Get zone detail",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "tags": [
+          "zones_client"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get zone detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zone"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update zone",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateZoneClientRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "zones_client"
+        ],
+        "responses": {
+          "200": {
+            "description": "Zone updated successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/client/zones/search": {
+      "post": {
+        "summary": "List all Zones of Client",
+        "operationId": "list",
+        "tags": [
+          "zones_client"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "paging": {
+                    "$ref": "#/components/schemas/PagingRequest"
+                  },
+                  "searches": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SearchRequest"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List all zones of client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListZoneResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse400"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations": {
+      "post": {
+        "summary": "Create new Oraganization",
+        "operationId": "create",
+        "tags": [
+          "organizations"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateOrgRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create new Organization successful"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{id}": {
+      "get": {
+        "summary": "get a Oraganization",
+        "operationId": "get",
+        "tags": [
+          "organizations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get Organization successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete a Oraganization",
+        "operationId": "delete",
+        "tags": [
+          "organizations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deleted Organization successful"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a Organization",
+        "operationId": "update",
+        "tags": [
+          "organizations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "organization ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrgRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/search": {
+      "post": {
+        "summary": "List all Organizations",
+        "operationId": "listOrgs",
+        "tags": [
+          "organizations"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "paging": {
+                    "$ref": "#/components/schemas/PagingRequest"
+                  },
+                  "searches": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SearchRequest"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of organizations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListOrganizationResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse400"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "timestamp"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "detail": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Zone": {
+        "type": "object",
+        "x-go-type": "dto.Zone",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "uint64",
+            "x-omitempty": false
+          },
+          "organizationID": {
+            "type": "integer",
+            "format": "uint64",
+            "x-omitempty": false
+          },
+          "name": {
+            "type": "string",
+            "description": "name of domain (ex: 'example.com.')",
+            "x-omitempty": false
+          },
+          "type": {
+            "type": "string"
+          },
+          "dnsSec": {
+            "type": "boolean",
+            "x-omitempty": false
+          },
+          "soaType": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateZoneRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "soaType",
+          "organizationID",
+          "isTemplate"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,fqdn"
+            }
+          },
+          "type": {
+            "type": "string"
+          },
+          "soaType": {
+            "type": "string"
+          },
+          "isTemplate": {
+            "type": "boolean"
+          },
+          "organizationID": {
+            "type": "integer",
+            "format": "uint64"
+          }
+        }
+      },
+      "UpdateZoneRequest": {
+        "type": "object",
+        "description": "update zone for admin",
+        "properties": {
+          "type": {
+            "type": "string",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "soaType": {
+            "type": "string",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "dnssec": {
+            "type": "boolean",
+            "x-go-type-skip-optional-pointer": false
+          }
+        }
+      },
+      "UpdateZoneClientRequest": {
+        "type": "object",
+        "description": "update zone for client",
+        "properties": {
+          "dnssec": {
+            "type": "boolean",
+            "x-go-type-skip-optional-pointer": false
+          }
+        }
+      },
+      "SOAType": {
+        "type": "string",
+        "x-go-type": "dto.SOAType",
+        "enum": [
+          "NONE",
+          "DEFAULT",
+          "INCREASE",
+          "EPOCH",
+          "OFF"
+        ]
+      },
+      "Type": {
+        "type": "string",
+        "x-go-type": "dto.Type",
+        "enum": [
+          "None",
+          "Native",
+          "Primary",
+          "Secondary"
+        ]
+      },
+      "Organization": {
+        "type": "object",
+        "x-go-type": "dto.Organization",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "uint64",
+            "x-omitempty": false
+          },
+          "name": {
+            "type": "string",
+            "x-omitempty": false
+          },
+          "description": {
+            "type": "string",
+            "x-omitempty": false
+          },
+          "contact": {
+            "type": "string",
+            "x-omitempty": false
+          },
+          "email": {
+            "type": "string",
+            "x-omitempty": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Paging": {
+        "type": "object",
+        "x-go-type": "dto.Paging",
+        "required": [
+          "page",
+          "limit",
+          "from",
+          "to",
+          "total",
+          "totalPage"
+        ],
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int"
+          },
+          "from": {
+            "type": "integer",
+            "format": "int"
+          },
+          "to": {
+            "type": "integer",
+            "format": "int"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int"
+          },
+          "totalPage": {
+            "type": "integer",
+            "format": "int"
+          },
+          "next": {
+            "type": "string"
+          },
+          "prev": {
+            "type": "string"
+          }
+        }
+      },
+      "PagingRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int"
+          }
+        }
+      },
+      "SearchRequest": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "value": {}
+        }
+      },
+      "CreateOrgRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "contact",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,max=255"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string",
+            "maxLength": 255,
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,max=255"
+            }
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 255,
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,max=255"
+            }
+          }
+        }
+      },
+      "ListOrganizationResponse": {
+        "type": "object",
+        "properties": {
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Organization"
+            }
+          },
+          "paging": {
+            "$ref": "#/components/schemas/Paging"
+          }
+        }
+      },
+      "UpdateOrgRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "contact": {
+            "type": "string",
+            "maxLength": 255,
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,max=255"
+            },
+            "x-go-type-skip-optional-pointer": false
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 255,
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,max=255"
+            },
+            "x-go-type-skip-optional-pointer": false
+          }
+        }
+      },
+      "ListZoneResponse": {
+        "type": "object",
+        "x-go-type": "dto.ListZoneResponse",
+        "properties": {
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zone"
+            }
+          },
+          "paging": {
+            "$ref": "#/components/schemas/Paging"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ErrorResponse400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "bad_request": {
+                "summary": "Invalid request",
+                "value": {
+                  "error": {
+                    "code": 4000,
+                    "message": "Missing required field"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse401": {
+        "description": "Common error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "unauthorized": {
+                "summary": "unauthorized",
+                "value": {
+                  "error": {
+                    "code": 4003,
+                    "message": "Required authentication"
+                  }
+                }
+              },
+              "unauthorized_token_invalid": {
+                "summary": "unauthorized token invalid",
+                "value": {
+                  "error": {
+                    "code": 4004,
+                    "message": "Required authentication"
+                  }
+                }
+              },
+              "unauthorized_require_2fa": {
+                "summary": "unauthorized",
+                "value": {
+                  "error": {
+                    "code": 4005,
+                    "message": "Required 2fa authentication"
+                  }
+                }
+              },
+              "unauthorized_verify_2fa": {
+                "summary": "unauthorized",
+                "value": {
+                  "error": {
+                    "code": 4006,
+                    "message": "Invalid code"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse403": {
+        "description": "Common error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "forbidden": {
+                "summary": "Permission deny",
+                "value": {
+                  "error": {
+                    "code": 4002,
+                    "message": "Permission deny"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse404": {
+        "description": "Common error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "bad_request": {
+                "summary": "Invalid request",
+                "value": {
+                  "error": {
+                    "code": 4001,
+                    "message": "Resource not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse500": {
+        "description": "Common error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "internal_error": {
+                "summary": "internal error",
+                "value": {
+                  "error": {
+                    "code": 5000,
+                    "message": "Internal connection failed"
+                  }
+                }
+              },
+              "database_error": {
+                "summary": "database error",
+                "value": {
+                  "error": {
+                    "code": 5001,
+                    "message": "Database connection failed"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

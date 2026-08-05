@@ -1,0 +1,12 @@
+type: object
+description: update zone for admin
+properties:
+  type:
+    type: string
+    x-go-type-skip-optional-pointer: false
+  soaType:
+    type: string
+    x-go-type-skip-optional-pointer: false
+  dnssec:
+    type: boolean
+    x-go-type-skip-optional-pointer: false

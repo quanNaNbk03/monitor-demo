@@ -1,0 +1,36 @@
+app:
+  name: ocn-dns-api
+  mode: dev
+  # admin or client
+  instance: client
+
+http:
+  server:
+    host: 0.0.0.0
+    port: 8080
+    readTimeout: 60s
+    readHeaderTimeout:
+    writeTimeout: 60s
+    idleTimeout:
+    cors:
+      allowMethod:
+        - GET
+        - POST
+        - OPTIONS
+        - PATCH
+        - DELETE
+        - PUT
+      allowDomain:
+        - "*"
+    tls:
+      enabled: false
+      caCert: ""
+      serverCert: ""
+      serverKey: ""
+
+  swagger:
+    isEnabled: true
+    path: "./api/openapi.bundled.json"
+
+mysql:
+  dsn: ""

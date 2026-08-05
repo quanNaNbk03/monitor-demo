@@ -1,0 +1,32 @@
+type: object
+x-go-type: "dto.Paging"
+required:
+  - page
+  - limit
+  - from
+  - to
+  - total
+  - totalPage
+properties:
+  page:
+    type: integer
+    format: int
+  limit:
+    type: integer
+    format: int
+  from:
+    type: integer
+    format: int
+  to:
+    type: integer
+    format: int
+  total:
+    type: integer
+    format: int
+  totalPage:
+    type: integer
+    format: int
+  next:
+    type: string
+  prev:
+    type: string

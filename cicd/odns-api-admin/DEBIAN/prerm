@@ -1,0 +1,69 @@
+#!/bin/bash
+# A script to run before the package is removed
+
+set -e
+# Define the username & home folder
+USERNAME="odns-api-admin"
+GROUPNETWORK="odns-api-admin"
+GROUPSTORAGE="odns-api-admin"
+HOME_FOLDER="/opt/ocn/odns-api-admin"
+LOG_FOLDER="/var/log/odns-api-admin"
+
+# Define your service name
+SERVICE_NAME="odns-api-admin"
+
+# Stop the service
+echo "Stopping $SERVICE_NAME..."
+systemctl stop "$SERVICE_NAME"
+
+# Disable the service
+echo "Disable $SERVICE_NAME..."
+systemctl disable "$SERVICE_NAME"
+
+# Remove the user without removing the home directory
+if id "$USERNAME" >/dev/null 2>&1; then
+    echo "Checking for running processes for user $USERNAME..."
+    if pgrep -u "$USERNAME" > /dev/null; then
+        echo "Processes found for user $USERNAME. Stopping all processes..."
+        pkill -u "$USERNAME"
+        if [ $? -eq 0 ]; then
+            echo "Successfully stopped all processes for user $USERNAME."
+        else
+            echo "Failed to stop processes for user $USERNAME."
+        fi
+    else
+        echo "No processes found for user $USERNAME."
+    fi
+
+    if groups "$GROUPNETWORK" >/dev/null 2>&1; then
+        echo "Remove user $USERNAME from existing group $GROUPNETWORK"
+        usermod -a -G $GROUPNETWORK $USERNAME
+    fi 
+    if groups "$GROUPSTORAGE" >/dev/null 2>&1; then
+        echo "Remove user $USERNAME from existing group $GROUPSTORAGE"
+        usermod -a -G $GROUPSTORAGE $USERNAME
+    fi 
+    echo "Removing user $USERNAME without deleting home directory..."
+    deluser "$USERNAME"
+    echo "Removing old binary file"
+    rm -f "$HOME_FOLDER/bin/*"
+else
+    echo "User $USERNAME does not exist. No removal necessary."
+fi
+
+# Cleanup log folder 
+if [ -d "$LOG_FOLDER" ]; then
+    echo "Cleanup data on $LOG_FOLDER..."
+    rm -rf "$LOG_FOLDER"
+else
+    echo "Log folder $LOG_FOLDER does not exist."
+fi
+
+# Remove the systemd service file
+echo "Remove $SERVICE_NAME"
+rm -f /lib/systemd/system/$SERVICE_NAME.service
+systemctl daemon-reload 
+
+
+# Add any other pre-removal cleanup tasks here
+exit 0

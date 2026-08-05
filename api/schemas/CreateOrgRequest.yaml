@@ -1,0 +1,30 @@
+type: object
+required:
+  - name
+  - contact
+  - email
+properties:
+  name:
+    type: string
+    maxLength: 255
+    x-oapi-codegen-extra-tags:
+      validate: required,max=255
+  description:
+    type: string
+  contact:
+    type: string
+    maxLength: 255
+    x-oapi-codegen-extra-tags:
+      validate: required,max=255
+  email:
+    type: string
+    maxLength: 255
+    x-oapi-codegen-extra-tags:
+      validate: required,max=255
+#  zonesIDs:
+#      type: array
+#      items:
+#        type: integer
+#        format: uint64
+#      x-oapi-codegen-extra-tags:
+#        validate: min=1,unique,dive

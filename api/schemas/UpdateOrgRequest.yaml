@@ -1,0 +1,24 @@
+type: object
+properties:
+  description:
+    type: string
+    x-go-type-skip-optional-pointer: false
+  contact:
+    type: string
+    maxLength: 255
+    x-oapi-codegen-extra-tags:
+      validate: required,max=255
+    x-go-type-skip-optional-pointer: false
+  email:
+    type: string
+    maxLength: 255
+    x-oapi-codegen-extra-tags:
+      validate: required,max=255
+    x-go-type-skip-optional-pointer: false
+#  zonesIDs:
+#      type: array
+#      items:
+#        type: integer
+#        format: uint64
+#      x-oapi-codegen-extra-tags:
+#        validate: min=1,unique,dive

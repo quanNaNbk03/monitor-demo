@@ -1,0 +1,12 @@
+get:
+  summary: Health check endpoint
+  operationId: getHealth
+  tags:
+    - health
+  responses:
+    '200':
+      description: Service is healthy
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/HealthResponse"

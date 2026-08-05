@@ -1,0 +1,16 @@
+[Unit]
+Description=odns-api-client Application
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/ocn/odns-api-client
+EnvironmentFile=/opt/ocn/odns-api-client/config/config.env
+ExecStart=/opt/ocn/odns-api-client/bin/odns-api-client
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

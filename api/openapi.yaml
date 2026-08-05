@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: OCN-DNS-API API
+  description: dns api server endpoints
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+paths:
+  /api/v1/ping:
+    $ref: "./path/health/api.yaml"
+
+  /api/v1/zones/{id}:
+    $ref: "./path/zone/zone.yaml"
+  /api/v1/zones:
+    $ref: "./path/zone/zones.yaml"
+  /api/v1/zones/search:
+    $ref: "./path/zone/zone_search.yaml"
+
+  /api/v1/client/zones/{id}:
+    $ref: "./path/zoneclient/zone.yaml"
+  /api/v1/client/zones/search:
+    $ref: "./path/zoneclient/zone_client_search.yaml"
+
+  /api/v1/organizations:
+    $ref: "./path/organization/organizations.yaml"
+  /api/v1/organizations/{id}:
+    $ref: "./path/organization/organization.yaml"
+  /api/v1/organizations/search:
+    $ref: "./path/organization/org_search.yaml"
+
+components:
+  schemas:
+    HealthResponse:
+      $ref: "./schemas/HealthResponse.yaml"
+    Error:
+      $ref: "./schemas/Error.yaml"
+    Zone:
+      $ref: "./schemas/Zone.yaml"
+    CreateZoneRequest:
+      $ref: "./schemas/CreateZoneRequest.yaml"
+    UpdateZoneRequest:
+      $ref: "./schemas/UpdateZoneRequest.yaml"
+    UpdateZoneClientRequest:
+      $ref: "./schemas/UpdateZoneClientRequest.yaml"
+    SOAType:
+      $ref: "./schemas/SOAType.yaml"
+    Type:
+      $ref: "./schemas/Type.yaml"
+    Organization:
+      $ref: "./schemas/Organization.yaml"
+    Paging:
+      $ref: "./schemas/Paging.yaml"
+    PagingRequest:
+      $ref: "./schemas/PagingRequest.yaml"
+    SearchRequest:
+      $ref: "./schemas/SearchRequest.yaml"
+    CreateOrgRequest:
+      $ref: "./schemas/CreateOrgRequest.yaml"
+    ListOrganizationResponse:
+      $ref: "./schemas/ListOrganizationResponse.yaml"
+    UpdateOrgRequest:
+      $ref: "./schemas/UpdateOrgRequest.yaml"
+    ListZoneResponse:
+      $ref: "./schemas/ListZoneResponse.yaml"
+
+  responses:
+    ErrorResponse400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            bad_request:
+              summary: Invalid request
+              value:
+                error:
+                  code: 4000
+                  message: "Missing required field"
+    ErrorResponse401:
+      description: Common error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            unauthorized:
+              summary: unauthorized
+              value:
+                error:
+                  code: 4003
+                  message: "Required authentication"
+            unauthorized_token_invalid:
+              summary: unauthorized token invalid
+              value:
+                error:
+                  code: 4004
+                  message: "Required authentication"
+            unauthorized_require_2fa:
+              summary: unauthorized
+              value:
+                error:
+                  code: 4005
+                  message: "Required 2fa authentication"
+            unauthorized_verify_2fa:
+              summary: unauthorized
+              value:
+                error:
+                  code: 4006
+                  message: "Invalid code"
+    ErrorResponse403:
+      description: Common error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            forbidden:
+              summary: Permission deny
+              value:
+                error:
+                  code: 4002
+                  message: "Permission deny"
+    ErrorResponse404:
+      description: Common error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            bad_request:
+              summary: Invalid request
+              value:
+                error:
+                  code: 4001
+                  message: "Resource not found"
+    ErrorResponse500:
+      description: Common error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            internal_error:
+              summary: internal error
+              value:
+                error:
+                  code: 5000
+                  message: "Internal connection failed"
+            database_error:
+              summary: database error
+              value:
+                error:
+                  code: 5001
+                  message: "Database connection failed"

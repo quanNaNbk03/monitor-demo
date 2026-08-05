@@ -1,0 +1,21 @@
+type: object
+required:
+  - name
+  - type
+  - soaType
+  - organizationID
+  - isTemplate
+properties:
+  name:
+    type: string
+    x-oapi-codegen-extra-tags:
+      validate: required,fqdn
+  type:
+    type: string
+  soaType:
+    type: string
+  isTemplate:
+    type: boolean
+  organizationID:
+    type: integer
+    format: uint64

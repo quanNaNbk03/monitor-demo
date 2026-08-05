@@ -1,0 +1,38 @@
+#!/bin/bash
+# This script is executed before the package is unpacked
+
+set -e
+
+#############################
+## BEGIN odns-api-admin config 
+#############################
+# Define the username & home folder
+USERNAME="odns-api-admin"
+GROUPNETWORK="odns-api-admin"
+GROUPSTORAGE="odns-api-admin"
+HOME_FOLDER="/opt/ocn/odns-api-admin"
+
+# Check if the user already exists
+if id "$USERNAME" >/dev/null 2>&1; then
+    echo "User $USERNAME already exists."
+else
+    # Create the user with the specified home folder
+    echo "Creating user $USERNAME with home folder $HOME_FOLDER..."
+    adduser --system --group --home "$HOME_FOLDER" --disabled-password --shell /bin/bash "$USERNAME"
+fi
+
+# Add odns-api to group network
+if id "$USERNAME" >/dev/null 2>&1; then
+    if groups "$GROUPNETWORK" >/dev/null 2>&1; then
+        echo "Add user $USERNAME to existing group $GROUPNETWORK"
+        usermod -a -G $GROUPNETWORK $USERNAME
+    fi 
+    if groups "$GROUPSTORAGE" >/dev/null 2>&1; then
+        echo "Add user $USERNAME to existing group $GROUPSTORAGE"
+        usermod -a -G $GROUPSTORAGE $USERNAME
+    fi 
+fi
+#############################
+## END odns-api-admin config 
+#############################
+exit 0

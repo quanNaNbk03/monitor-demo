@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: cicd
+  become: true
+  serial: 5
+  gather_facts: false  # Disable automatic fact gathering
+  pre_tasks:           # Add a pre-task for limited fact gathering
+    - name: Gather minimal facts
+      ansible.builtin.setup:
+        gather_subset:
+          - min       # Gather only essential facts (e.g., OS and platform)
+  roles:
+    - {role: odns, tags: odns}

@@ -1,0 +1,6 @@
+type: object
+description: update zone for client
+properties:
+  dnssec:
+    type: boolean
+    x-go-type-skip-optional-pointer: false

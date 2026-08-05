@@ -1,0 +1,48 @@
+#!/bin/bash
+# This script is executed after the package is installed
+
+set -e
+
+#############################
+## BEGIN ocn Neuron config 
+#############################
+# Define the username & home folder
+USERNAME="odns-api-admin"
+SERVICE_NAME="odns-api-admin"
+HOME_FOLDER="/opt/ocn/odns-api-admin"
+LOG_FOLDER="/var/log/odns-api-admin"
+
+# Check if the home folder exists and change the owner
+if [ -d "$HOME_FOLDER" ]; then
+    echo "Changing ownership of $HOME_FOLDER to $USERNAME..."
+    chown -R "$USERNAME":"$USERNAME" "$HOME_FOLDER"
+else
+    echo "Home folder $HOME_FOLDER does not exist."
+fi
+
+# Check if the log folder exists, create and change the owner
+if [ -d "$LOG_FOLDER" ]; then
+    echo "Changing ownership of $LOG_FOLDER to $USERNAME..."
+    chown -R "$USERNAME":"$USERNAME" "$LOG_FOLDER"
+else
+    mkdir -p "$LOG_FOLDER"
+    chown -R "$USERNAME":"$USERNAME" "$LOG_FOLDER"
+fi
+
+# Enable and start service 
+# echo "Start $SERVICE_NAME..."
+# systemctl start "$SERVICE_NAME"
+
+# Right permision
+echo "Right permision sudoers"
+chown root:root /etc/sudoers.d/odns-api-admin
+chmod 400 /etc/sudoers.d/odns-api-admin
+
+# Enable service
+echo "Enable $SERVICE_NAME..."
+systemctl enable "$SERVICE_NAME"
+#############################
+## END ocn Neuron config 
+#############################
+
+exit 0

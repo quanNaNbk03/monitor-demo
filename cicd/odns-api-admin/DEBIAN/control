@@ -1,0 +1,13 @@
+Package: odns-api-admin
+Version: VERSION
+Architecture: amd64
+Maintainer: OCN Infra <info@ocn.com.vn>
+Installed-Size: 10240
+Depends: python3-pip
+Section: base
+Priority: optional
+Homepage: https://ocn.com.vn
+Description: OCN Distributed Name System API
+ A high-performance API service for managing the OCN Distributed Name System.
+ This package provides management tools, API endpoints, and system
+ services for the ODNS infrastructure.

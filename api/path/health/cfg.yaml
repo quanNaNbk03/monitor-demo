@@ -1,0 +1,10 @@
+package: health
+generate:
+  gin-server: true
+  models: true
+output: ../../../pkg/api/health/health.gen.go
+output-options:
+  skip-prune: false
+  prefer-skip-optional-pointer: true
+  include-tags:
+    - health

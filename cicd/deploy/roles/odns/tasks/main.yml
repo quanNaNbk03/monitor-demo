@@ -1,0 +1,185 @@
+- name: Add multiple internal DNS entries
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+    create: yes
+  with_items:
+    - "172.18.206.2 nexus.ocn.com.vn"
+    - "172.18.206.2 vault.ocn.com.vn"
+
+
+- name: Config authentication nexus
+  template:
+    src: nexus-ocn.conf.j2
+    dest: /etc/apt/auth.conf.d/nexus-ocn.conf
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Add GPG key
+  copy:
+    src: ocn-nexus-pubkey.asc
+    dest: /etc/apt/trusted.gpg.d/ocn-nexus-pubkey.asc
+
+- name: Disable Verify-Peer https::nexus.ocn.com.vn
+  copy:
+    src: 99disable-cert-check
+    dest: /etc/apt/apt.conf.d/99disable-cert-check
+
+- name: Remove old repo nexus config 
+  file:
+    path: /etc/apt/sources.list.d/nexus-ocn.list
+    state: absent
+
+- name: Add OCN Nexus apt repository
+  apt_repository:
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/ocn-nexus-pubkey.asc arch=amd64] https://nexus.ocn.com.vn/repository/ubuntu-jammy/ jammy main
+    state: present
+    filename: nexus-ocn
+
+
+- name: Check if odns-api-admin exists
+  stat: path=/lib/systemd/system/odns-api-admin.service
+  register: service_stat
+
+- name: Stop services
+  service:
+    name: odns-api-admin
+    state: stopped
+  ignore_errors: true
+  when: service_stat.stat.exists
+
+- name: Remove package
+  apt:
+    name: odns-api-admin
+    state: absent
+    purge: true
+  ignore_errors: true
+
+- name: Install odns-api-admin
+  apt:
+    name: odns-api-admin={{ VERSION }}
+    update_cache: true
+    state: present
+  register: apt_status
+  until: apt_status is success
+  delay: 6
+  retries: 10
+
+# - name: Get value from vault and generate config.env
+#   shell: |
+#     set -o pipefail
+#     curl -k -s \
+#       -H "Content-Type: application/json" \
+#       -H "X-Vault-Token: {{ VAULT_TOKEN }}" \
+#       "{{ VAULT_URL }}/v1/ocn/data/{{ PROJECT }}/{{ APPNAME1 }}" \
+#     | jq -r '.data.data | to_entries | .[] | "\(.key)=\"\(.value | tostring)\""' \
+#     > {{ CONFIG_FOLDER_APP1 }}/config.env
+#   args:
+#     executable: /bin/bash
+#   register: vault_output
+#   changed_when: vault_output.rc == 0
+
+- name: Fetch secrets from Vault
+  ansible.builtin.uri:
+    url: "{{ VAULT_URL }}/v1/ocn/data/{{ PROJECT }}/{{ APPNAME1 }}"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ VAULT_TOKEN }}"
+    validate_certs: false
+    return_content: true
+    status_code: 200
+  register: vault_secret_app1
+  delegate_to: localhost
+
+- name: Write config.env
+  ansible.builtin.copy:
+    dest: "{{ CONFIG_FOLDER_APP1 }}/config.env"
+    mode: "0600"
+    content: |
+      {% for key, value in (vault_secret_app1.json.data.data | default({})).items() %}
+      {{ key }}="{{ value }}"
+      {% endfor %}
+
+- name: Start and enable odns-api-admin service
+  service:
+    name: odns-api-admin
+    enabled: yes
+    state: restarted
+  tags: config_gen
+
+- name: Check if odns-api-client exists
+  stat: path=/lib/systemd/system/odns-api-client.service
+  register: client_stat
+
+- name: Stop client services
+  service:
+    name: odns-api-client
+    state: stopped
+  ignore_errors: true
+  when: client_stat.stat.exists
+
+- name: Remove client package
+  apt:
+    name: odns-api-client
+    state: absent
+    purge: true
+  ignore_errors: true
+
+- name: Install odns-api-client
+  apt:
+    name: odns-api-client={{ VERSION }}
+    update_cache: true
+    state: present
+  register: client_status
+  until: client_status is success
+  delay: 6
+  retries: 10
+
+# - name: Get value from vault and generate config.env
+#   shell: |
+#     set -o pipefail
+#     curl -k -s \
+#       -H "Content-Type: application/json" \
+#       -H "X-Vault-Token: {{ VAULT_TOKEN }}" \
+#       "{{ VAULT_URL }}/v1/ocn/data/{{ PROJECT }}/{{ APPNAME2 }}" \
+#     | jq -r '.data.data | to_entries | .[] | "\(.key)=\"\(.value | tostring)\""' \
+#     > {{ CONFIG_FOLDER_APP2 }}/config.env
+#   args:
+#     executable: /bin/bash
+#   register: vault_output
+#   changed_when: vault_output.rc == 0
+
+- name: Fetch secrets from Vault
+  ansible.builtin.uri:
+    url: "{{ VAULT_URL }}/v1/ocn/data/{{ PROJECT }}/{{ APPNAME2 }}"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ VAULT_TOKEN }}"
+    validate_certs: false
+    return_content: true
+    status_code: 200
+  register: vault_secret_app2
+  delegate_to: localhost
+
+- name: Write config.env
+  ansible.builtin.copy:
+    dest: "{{ CONFIG_FOLDER_APP2 }}/config.env"
+    mode: "0600"
+    content: |
+      {% for key, value in (vault_secret_app2.json.data.data | default({})).items() %}
+      {{ key }}="{{ value }}"
+      {% endfor %}
+
+- name: Start and enable odns-api-client service
+  service:
+    name: odns-api-client
+    enabled: yes
+    state: restarted
+  tags: config_gen
+
+- name: Cleanup authen nexus 
+  file:
+    path: /etc/apt/auth.conf.d/nexus-ocn.conf
+    state: absent
