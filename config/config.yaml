@@ -39,3 +39,8 @@ monitorMetric:
   address: ""
   scrapeInterval:
   testInstance: ""
+
+victoriaMetric:
+  address: ""
+  scrapeInterval:
+  testInstance: ""
