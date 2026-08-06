@@ -712,6 +712,86 @@
           }
         }
       }
+    },
+    "/api/v1/vms/{id}/victoriametrics/{metricType}": {
+      "get": {
+        "summary": "Get VM monitor by metricType with victoriametrics",
+        "operationId": "getMonitorVMWithVM",
+        "tags": [
+          "vms"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "vm id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "metricType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/VMMetricType"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "step",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get VM monitor by metricType",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Monitor"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse401"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorResponse403"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse404"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse500"
+          }
+        }
+      }
     }
   },
   "components": {

@@ -33,6 +33,8 @@ paths:
 
   /api/v1/vms/{id}/prometheus/{metricType}:
     $ref: "./path/vm/prometheus.yaml"
+  /api/v1/vms/{id}/victoriametrics/{metricType}:
+    $ref: "./path/vm/victoriametrics.yaml"
 
 components:
   schemas:

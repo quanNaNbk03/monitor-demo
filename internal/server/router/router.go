@@ -55,10 +55,15 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 	if prometheusRepoErr != nil {
 		logger.Fatalf("Error creating prometheus client: %v", prometheusRepoErr)
 	}
+	victoriaMetricsRepo, victoriaMetricsRepoErr := repository.NewVictoriaMetricsClient()
+	if victoriaMetricsRepoErr != nil {
+		logger.Fatalf("Error creating victoriametrics client: %v", victoriaMetricsRepoErr)
+	}
 	// Init services
 	zoneService := service.NewZoneService(zoneRepo, orgRepo)
 	orgService := service.NewOrgService(orgRepo)
 	monitorVMService := service.NewMonitorVMService(prometheusRepo)
+	victoriaMetricsService := service.NewVictoriaMetricsService(victoriaMetricsRepo)
 	// Create separate handlers for each domain
 	healthHandler := handler.NewHealthHandler()
 
@@ -70,7 +75,7 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 	if appInstance == "admin" {
 		zoneHandler := handler.NewZoneHandler(zoneService)
 		orgHandler := handler.NewOrgHandler(orgService)
-		vmHandler := handler.NewVMHandler(monitorVMService)
+		vmHandler := handler.NewVMHandler(monitorVMService, victoriaMetricsService)
 
 		zone.RegisterHandlers(apiGroup, zoneHandler)
 		org.RegisterHandlers(apiGroup, orgHandler)

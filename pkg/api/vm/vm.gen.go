@@ -83,11 +83,21 @@ type GetMonitorVMWithPromParams struct {
 	Step  int64 `form:"step,omitempty" json:"step,omitempty"`
 }
 
+// GetMonitorVMWithVMParams defines parameters for GetMonitorVMWithVM.
+type GetMonitorVMWithVMParams struct {
+	Start int64 `form:"start" json:"start"`
+	End   int64 `form:"end" json:"end"`
+	Step  int64 `form:"step,omitempty" json:"step,omitempty"`
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// GetMonitorVMWithProm Get VM monitor by metricType with prometheus
 	// (GET /api/v1/vms/{id}/prometheus/{metricType})
 	GetMonitorVMWithProm(c *gin.Context, id uint64, metricType VMMetricType, params GetMonitorVMWithPromParams)
+	// GetMonitorVMWithVM Get VM monitor by metricType with victoriametrics
+	// (GET /api/v1/vms/{id}/victoriametrics/{metricType})
+	GetMonitorVMWithVM(c *gin.Context, id uint64, metricType VMMetricType, params GetMonitorVMWithVMParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -160,6 +170,67 @@ func (siw *ServerInterfaceWrapper) GetMonitorVMWithProm(c *gin.Context) {
 	siw.Handler.GetMonitorVMWithProm(c, id, metricType, params)
 }
 
+// GetMonitorVMWithVM operation middleware
+func (siw *ServerInterfaceWrapper) GetMonitorVMWithVM(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "id" -------------
+	var id uint64
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "integer", Format: "uint64", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "metricType" -------------
+	var metricType VMMetricType
+
+	err = runtime.BindStyledParameterWithOptions("simple", "metricType", c.Param("metricType"), &metricType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter metricType: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMonitorVMWithVMParams
+
+	// ------------- Required query parameter "start" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "start", c.Request.URL.Query(), &params.Start, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter start: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Required query parameter "end" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "end", c.Request.URL.Query(), &params.End, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter end: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "step" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "step", c.Request.URL.Query(), &params.Step, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter step: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetMonitorVMWithVM(c, id, metricType, params)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -188,4 +259,5 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/api/v1/vms/:id/prometheus/:metricType", wrapper.GetMonitorVMWithProm)
+	router.GET(options.BaseURL+"/api/v1/vms/:id/victoriametrics/:metricType", wrapper.GetMonitorVMWithVM)
 }
