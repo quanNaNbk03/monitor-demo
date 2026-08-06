@@ -34,3 +34,8 @@ http:
 
 mysql:
   dsn: ""
+
+monitorMetric:
+  address: ""
+  scrapeInterval:
+  testInstance: ""
