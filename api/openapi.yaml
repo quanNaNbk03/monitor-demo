@@ -11,25 +11,6 @@ paths:
   /api/v1/ping:
     $ref: "./path/health/api.yaml"
 
-  /api/v1/zones/{id}:
-    $ref: "./path/zone/zone.yaml"
-  /api/v1/zones:
-    $ref: "./path/zone/zones.yaml"
-  /api/v1/zones/search:
-    $ref: "./path/zone/zone_search.yaml"
-
-  /api/v1/client/zones/{id}:
-    $ref: "./path/zoneclient/zone.yaml"
-  /api/v1/client/zones/search:
-    $ref: "./path/zoneclient/zone_client_search.yaml"
-
-  /api/v1/organizations:
-    $ref: "./path/organization/organizations.yaml"
-  /api/v1/organizations/{id}:
-    $ref: "./path/organization/organization.yaml"
-  /api/v1/organizations/search:
-    $ref: "./path/organization/org_search.yaml"
-
 
   /api/v1/vms/{id}/prometheus/{metricType}:
     $ref: "./path/vm/prometheus.yaml"
@@ -42,34 +23,12 @@ components:
       $ref: "./schemas/HealthResponse.yaml"
     Error:
       $ref: "./schemas/Error.yaml"
-    Zone:
-      $ref: "./schemas/Zone.yaml"
-    CreateZoneRequest:
-      $ref: "./schemas/CreateZoneRequest.yaml"
-    UpdateZoneRequest:
-      $ref: "./schemas/UpdateZoneRequest.yaml"
-    UpdateZoneClientRequest:
-      $ref: "./schemas/UpdateZoneClientRequest.yaml"
-    SOAType:
-      $ref: "./schemas/SOAType.yaml"
-    Type:
-      $ref: "./schemas/Type.yaml"
-    Organization:
-      $ref: "./schemas/Organization.yaml"
     Paging:
       $ref: "./schemas/Paging.yaml"
     PagingRequest:
       $ref: "./schemas/PagingRequest.yaml"
     SearchRequest:
       $ref: "./schemas/SearchRequest.yaml"
-    CreateOrgRequest:
-      $ref: "./schemas/CreateOrgRequest.yaml"
-    ListOrganizationResponse:
-      $ref: "./schemas/ListOrganizationResponse.yaml"
-    UpdateOrgRequest:
-      $ref: "./schemas/UpdateOrgRequest.yaml"
-    ListZoneResponse:
-      $ref: "./schemas/ListZoneResponse.yaml"
     VMMetricType:
       $ref: "./schemas/VMMetricType.yaml"
     Monitor:

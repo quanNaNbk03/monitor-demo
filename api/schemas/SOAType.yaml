@@ -1,9 +1,0 @@
-type: string
-x-go-type: "dto.SOAType"
-enum:
-  - "NONE"
-  - "DEFAULT"
-  - "INCREASE"
-  - "EPOCH"
-  - "OFF"
-

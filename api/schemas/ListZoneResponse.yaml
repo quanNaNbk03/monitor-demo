@@ -1,9 +1,0 @@
-type: object
-x-go-type: "dto.ListZoneResponse"
-properties:
-  organizations:
-    type: array
-    items:
-      $ref: "../openapi.yaml#/components/schemas/Zone"
-  paging:
-    $ref: "../openapi.yaml#/components/schemas/Paging"

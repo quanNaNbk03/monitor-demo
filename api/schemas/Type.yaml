@@ -1,8 +1,0 @@
-type: string
-x-go-type: "dto.Type"
-enum:
-  - "None"
-  - "Native"
-  - "Primary"
-  - "Secondary"
-

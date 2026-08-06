@@ -13,9 +13,6 @@ import (
 	"github.com/quanNaNbk03/monitor-demo/internal/server/repository"
 	"github.com/quanNaNbk03/monitor-demo/internal/server/service"
 	"github.com/quanNaNbk03/monitor-demo/pkg/api/health"
-	org "github.com/quanNaNbk03/monitor-demo/pkg/api/organization"
-	"github.com/quanNaNbk03/monitor-demo/pkg/api/zone"
-	zoneclient "github.com/quanNaNbk03/monitor-demo/pkg/api/zoneclient"
 
 	"git.ocn.com.vn/ocn/common/appcfg"
 	"git.ocn.com.vn/ocn/common/storage"
@@ -49,8 +46,6 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.URL("/openapi.json")))
 	}
 	// Init Repository
-	zoneRepo := repository.NewZoneRepository(mysqlInstance.DB)
-	orgRepo := repository.NewOrgRepository(mysqlInstance.DB)
 	prometheusRepo, prometheusRepoErr := repository.NewPrometheusClient()
 	if prometheusRepoErr != nil {
 		logger.Fatalf("Error creating prometheus client: %v", prometheusRepoErr)
@@ -60,8 +55,6 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 		logger.Fatalf("Error creating victoriametrics client: %v", victoriaMetricsRepoErr)
 	}
 	// Init services
-	zoneService := service.NewZoneService(zoneRepo, orgRepo)
-	orgService := service.NewOrgService(orgRepo)
 	monitorVMService := service.NewMonitorVMService(prometheusRepo)
 	victoriaMetricsService := service.NewVictoriaMetricsService(victoriaMetricsRepo)
 	// Create separate handlers for each domain
@@ -73,17 +66,11 @@ func Setup(mysqlInstance *storage.MySQL) *gin.Engine {
 	appInstance := viper.GetString("app.instance")
 
 	if appInstance == "admin" {
-		zoneHandler := handler.NewZoneHandler(zoneService)
-		orgHandler := handler.NewOrgHandler(orgService)
 		vmHandler := handler.NewVMHandler(monitorVMService, victoriaMetricsService)
 
-		zone.RegisterHandlers(apiGroup, zoneHandler)
-		org.RegisterHandlers(apiGroup, orgHandler)
 		vm.RegisterHandlers(apiGroup, vmHandler)
 	} else if appInstance == "client" {
-		zoneClientHandler := handler.NewZoneClientHandler(zoneService)
 
-		zoneclient.RegisterHandlers(apiGroup, zoneClientHandler)
 	}
 
 	// Register each handler to its routes
