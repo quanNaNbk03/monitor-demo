@@ -41,14 +41,14 @@ func NewVictoriaMetricsService(victoriaMetricRepo repository.VictoriaMetricsRepo
 			Name:  "Disk bytes",
 			Type:  "time_series",
 			Unit:  "bytes",
-			Label: "device",
+			Label: "bps",
 			Targets: []model.MetricByTypeConfigTarget{
 				{
-					Expr:         "irate(node_disk_reads_bytes_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])",
+					Expr:         "irate(node_disk_read_bytes_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])*8",
 					LegendFormat: "Disk Read Bytes - $device",
 				},
 				{
-					Expr:         "irate(node_disk_written_bytes_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])",
+					Expr:         "irate(node_disk_written_bytes_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])*8",
 					LegendFormat: "Disk Write Bytes - $device",
 				},
 			},
@@ -119,11 +119,11 @@ func NewVictoriaMetricsService(victoriaMetricRepo repository.VictoriaMetricsRepo
 			Label: "device",
 			Targets: []model.MetricByTypeConfigTarget{
 				{
-					Expr:         "irate(node_network_receive_packets_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])*8",
+					Expr:         "irate(node_network_receive_packets_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])",
 					LegendFormat: "Network-RX - $device",
 				},
 				{
-					Expr:         "irate(node_network_transmit_packets_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])*8",
+					Expr:         "irate(node_network_transmit_packets_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])",
 					LegendFormat: "Network-TX - $device",
 				},
 			},
