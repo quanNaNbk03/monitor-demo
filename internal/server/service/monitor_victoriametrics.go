@@ -40,8 +40,8 @@ func NewVictoriaMetricsService(victoriaMetricRepo repository.VictoriaMetricsRepo
 		"diskBytes": {
 			Name:  "Disk bytes",
 			Type:  "time_series",
-			Unit:  "bytes",
-			Label: "bps",
+			Unit:  "bps",
+			Label: "device",
 			Targets: []model.MetricByTypeConfigTarget{
 				{
 					Expr:         "irate(node_disk_read_bytes_total{instance=\"$instance\",device=\"$device\"}[$__rate_interval])*8",
